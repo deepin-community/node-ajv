@@ -1,0 +1,4 @@
+# just data
+source: source-is-missing lib/compile/formats.js line length is 1161 characters (>512)
+source: source-contains-prebuilt-javascript-object lib/compile/formats.js line length is 1161 characters (>512)
+source: very-long-line-length-in-source-file lib/compile/formats.js line length is 1161 characters (>512)

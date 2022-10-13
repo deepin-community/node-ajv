@@ -1,0 +1,11 @@
+version=3
+opts=\
+dversionmangle=s/\+(debian|dfsg|ds|deb)(\.\d+)?$//,\
+filenamemangle=s/.*\/v?([\d\.-]+)\.tar\.gz/node-ajv-$1.tar.gz/ \
+ https://github.com/epoberezkin/ajv/tags .*/archive/v?([\d\.]+).tar.gz debian
+
+opts=\
+component=fast-json-stable-stringify,\
+dversionmangle=auto,\
+filenamemangle=s/.*\/v?([\d\.-]+)\.tar\.gz/node-fast-json-stable-stringify-$1.tar.gz/ \
+ https://github.com/epoberezkin/fast-json-stable-stringify/tags .*/archive/v?(2(?:.[\d\.]+)?).tar.gz ignore

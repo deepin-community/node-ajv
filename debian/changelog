@@ -1,0 +1,91 @@
+node-ajv (6.12.6-2) unstable; urgency=medium
+
+  * Team upload
+  * Enable part of upstream tests
+  * Force lib/dot/*.def install (filtered by pkg-js-tools)
+
+ -- Xavier Guimard <yadd@debian.org>  Fri, 16 Oct 2020 20:05:09 +0200
+
+node-ajv (6.12.6-1) unstable; urgency=medium
+
+  * Team upload
+  * Use dh-sequence-nodejs
+  * New upstream version 6.12.6
+
+ -- Xavier Guimard <yadd@debian.org>  Mon, 12 Oct 2020 10:36:39 +0200
+
+node-ajv (6.12.4-1) unstable; urgency=medium
+
+  * Team upload
+
+  [ Debian Janitor ]
+  * Trim trailing whitespace.
+  * Use secure copyright file specification URI.
+  * Bump debhelper from old 11 to 12.
+  * Set debhelper-compat version in Build-Depends.
+  * Set upstream metadata fields: Bug-Database, Bug-Submit, Repository,
+    Repository-Browse.
+  * Update standards version to 4.4.1, no changes needed.
+
+  [ Xavier Guimard ]
+  * Bump debhelper compatibility level to 13
+  * Declare compliance with policy 4.5.0
+  * Add "Rules-Requires-Root: no"
+  * New upstream version 6.12.4 (Closes: CVE-2020-15366)
+  * Update lintian overrides
+  * Fix autopkgtest returned value (77 since no test are run)
+
+ -- Xavier Guimard <yadd@debian.org>  Fri, 21 Aug 2020 17:11:17 +0200
+
+node-ajv (6.10.2-1) unstable; urgency=medium
+
+  * New upstream version 6.10.2
+  * Bump Standards-Version to 4.4.0 (no changes needed)
+  * Update path to /usr/share/nodejs in lintian override file
+  * Override to remove .eslintrc.yml is not needed now (pkg-js-tools is fixed)
+
+ -- Pirate Praveen <praveen@debian.org>  Thu, 08 Aug 2019 06:08:00 +0000
+
+node-ajv (6.10.0-5) unstable; urgency=medium
+
+  * Add Breaks for node-har-schema << 2.0.0-2
+
+ -- Pirate Praveen <praveen@debian.org>  Mon, 05 Aug 2019 13:42:40 +0000
+
+node-ajv (6.10.0-4) unstable; urgency=medium
+
+  * Add Breaks: node-har-validator (<< 5.1.3~)
+
+ -- Pirate Praveen <praveen@debian.org>  Mon, 05 Aug 2019 11:08:59 +0000
+
+node-ajv (6.10.0-3) unstable; urgency=medium
+
+  * Reupload to unstable
+  * Switch to pkg-js-tools auto install
+
+ -- Pirate Praveen <praveen@debian.org>  Sun, 04 Aug 2019 07:24:41 +0000
+
+node-ajv (6.10.0-2) experimental; urgency=medium
+
+  * Install scripts directory (required for node-ajv-keywords)
+
+ -- Pirate Praveen <praveen@debian.org>  Mon, 17 Jun 2019 21:05:53 +0530
+
+node-ajv (6.10.0-1) experimental; urgency=medium
+
+  * New upstream version 6.10.0
+  * Update lintian override
+  * Add fast-json-stable-stringify as a component
+  * Switch to pkg-js-tools
+  * Bump Standards-Version to 4.3.0 (no changes needed)
+  * Bump debhelper compatibility level to 11
+  * Change section to javascript
+  * Use salsa.debian.org in Vcs-* fields
+
+ -- Pirate Praveen <praveen@debian.org>  Mon, 17 Jun 2019 19:23:25 +0530
+
+node-ajv (5.0.0-1) unstable; urgency=low
+
+  * Initial release (Closes: #861374)
+
+ -- Pirate Praveen <praveen@debian.org>  Fri, 28 Apr 2017 11:22:48 +0530
