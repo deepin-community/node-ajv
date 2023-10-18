@@ -1,3 +1,15 @@
+node-ajv (6.12.6-3) unstable; urgency=medium
+
+  * Team upload
+  * Add ctype=nodejs to component(s)
+  * Declare compliance with policy 4.6.0
+  * Modernize debian/watch
+    * Fix GitHub tags regex
+    * Fix filenamemangle
+  * Update nodejs dependency to nodejs:any
+
+ -- Yadd <yadd@debian.org>  Mon, 22 Nov 2021 15:26:28 +0100
+
 node-ajv (6.12.6-2) unstable; urgency=medium
 
   * Team upload
