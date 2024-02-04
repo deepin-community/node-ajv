@@ -1,7 +1,0 @@
-spec/security.spec.js
-spec/schema-tests.spec.js
-spec/json-schema.spec.js
-spec/extras.spec.js
-spec/options/strictNumbers.spec.js
-spec/async_schemas.spec.js
-spec/async_validate.spec.js

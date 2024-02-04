@@ -1,3 +1,63 @@
+node-ajv (8.12.0~ds+~2.1.1-4) unstable; urgency=medium
+
+  * Team upload
+  * Launch standalone test only during build (armel issue)
+
+ -- Yadd <yadd@debian.org>  Sat, 16 Dec 2023 12:36:59 +0400
+
+node-ajv (8.12.0~ds+~2.1.1-3) unstable; urgency=medium
+
+  * Team upload
+  * Increase x10 test timeout due to buggy armel platforms
+
+ -- Yadd <yadd@debian.org>  Fri, 15 Dec 2023 10:44:20 +0400
+
+node-ajv (8.12.0~ds+~2.1.1-2) unstable; urgency=medium
+
+  * Team upload
+  * Indicate that ajv 8 breaks eslint < 6.4.0~dfsg+~6.1.9-8~
+  * Fix autopkgtest
+  * Back to unstable
+
+ -- Yadd <yadd@debian.org>  Thu, 14 Dec 2023 11:53:06 +0400
+
+node-ajv (8.12.0~ds+~2.1.1-1) experimental; urgency=medium
+
+  * Team upload
+  * Breaks: node-har-schema < 2.0.0-2~, node-schema-utils < 4
+  * Update lintian override info format in d/source/lintian-overrides
+    on line 2-3
+  * Set upstream metadata fields: Bug-Database, Bug-Submit,
+    Repository-Browse.
+  * Update standards version to 4.6.2, no changes needed.
+  * New upstream version 8.12.0~ds+~2.1.1
+  * Refresh tsc patch
+
+ -- Yadd <yadd@debian.org>  Thu, 07 Dec 2023 12:30:30 +0400
+
+node-ajv (8.11.2~ds+~2.1.1-1) experimental; urgency=medium
+
+  * Team upload
+  * Update standards version to 4.6.1, no changes needed.
+  * New upstream version 8.11.2~ds+~2.1.1
+  * Refresh patches
+  * Add test dependency to node-esbuild
+  * Update test
+
+ -- Yadd <yadd@debian.org>  Wed, 23 Nov 2022 09:54:03 +0100
+
+node-ajv (8.8.2~ds+~2.1.1-1) experimental; urgency=medium
+
+  * Team upload
+  * Drop component: fast-json-stable-stringify
+  * Embed ajv-formats
+  * New upstream version 8.8.2~ds+~2.1.1
+  * Embed @ajv-validator/config for build and json-schema-test for test
+  * Add node-re2 and node-require-from-string in recommended dependencies
+  * Update build, tsc patch, test, copyright, docs, lintian overrides
+
+ -- Yadd <yadd@debian.org>  Tue, 23 Nov 2021 09:22:22 +0100
+
 node-ajv (6.12.6-3) unstable; urgency=medium
 
   * Team upload

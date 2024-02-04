@@ -5,9 +5,9 @@
 	dh $@
 
 override_dh_auto_build:
+	tsc
+	cp -r lib/refs dist
+	rm dist/refs/json-schema-2019-09/index.ts
+	rm dist/refs/json-schema-2020-12/index.ts
+	rm dist/refs/jtd-schema.ts
 	dh_auto_build --buildsystem=nodejs
-	nodejs scripts/compile-dots.js
-
-override_dh_auto_clean:
-	dh_auto_clean --buildsystem=nodejs
-	find lib/dotjs -not -name index.js -name '*.js' -delete

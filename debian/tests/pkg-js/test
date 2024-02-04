@@ -1,1 +1,12 @@
-mocha `find spec -name '*.spec.js'|grep -v -f debian/tests/test_exclude`
+rm -f spec/_json/*.js
+node scripts/jsontests
+if test "$AUTOPKGTEST_TMP" != ""; then
+	ln -s .. node_modules/ajv || true
+	for f in dist lib package.json; do
+		rm -rf $f
+		cp -a /usr/share/nodejs/ajv/$f .
+	done
+	rm -rf spec/JSON-Schema-Test-Suite/tests/draft6 spec/_json/draft6.js spec/json-schema.spec.ts spec/tests/schemas/medium.json spec/_json/tests.js spec/schema-tests.spec.ts spec/standalone.spec.ts
+fi
+TS_NODE_PROJECT=spec/tsconfig.json mocha --bail --exit --timeout 100000 -r ts-node/register "spec/**/*.spec.{ts,js}"
+rm -f spec/_json/*.js

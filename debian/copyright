@@ -2,13 +2,28 @@ Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: ajv
 Upstream-Contact: https://github.com/epoberezkin/ajv/issues
 Source: https://github.com/epoberezkin/ajv
+ https://github.com/ajv-validator/ajv-formats/tags
+Files-Excluded: docs
 
 Files: *
-Copyright: 2015, Evgeny Poberezkin
+Copyright: 2015-2021, Evgeny Poberezkin
 License: Expat
 
 Files: debian/*
 Copyright: 2017, 2019, Pirate Praveen <praveen@debian.org>
+ 2021, Yadd <yadd@debian.org>
+License: Expat
+
+Files: debian/build_modules/@ajv-validator/config/*
+Copyright: 2020 Another JSON Schema Validator
+License: Expat
+
+Files: debian/patches/import-spec.patch
+Copyright: 2012 Julian Berman
+License: Expat
+
+Files: debian/tests/test_modules/json-schema-test/*
+Copyright: 2015 MailOnline
 License: Expat
 
 License: Expat
