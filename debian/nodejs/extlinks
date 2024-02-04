@@ -1,0 +1,7 @@
+fast-deep-equal
+json-schema-traverse
+re2
+@types/mocha
+@types/node
+@types/require-from-string
+uri-js

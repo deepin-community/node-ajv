@@ -1,0 +1,413 @@
+Description: drop some specs
+Author: Yadd <yadd@debian.org>
+Forwarded: no
+Last-Update: 2021-11-23
+
+--- a/spec/JSON-Schema-Test-Suite/tests/draft2019-09/optional/format/date-time.json
++++ b/spec/JSON-Schema-Test-Suite/tests/draft2019-09/optional/format/date-time.json
+@@ -59,11 +59,6 @@
+                 "valid": true
+             },
+             {
+-                "description": "a valid date-time with a leap second, with minus offset",
+-                "data": "1998-12-31T15:59:60.123-08:00",
+-                "valid": true
+-            },
+-            {
+                 "description": "an invalid date-time past leap second, UTC",
+                 "data": "1998-12-31T23:59:61Z",
+                 "valid": false
+@@ -84,11 +79,6 @@
+                 "valid": false
+             },
+             {
+-                "description": "an invalid offset in date-time string",
+-                "data": "1990-12-31T15:59:59-24:00",
+-                "valid": false
+-            },
+-            {
+                 "description": "an invalid closing Z after time-zone offset",
+                 "data": "1963-06-19T08:30:06.28123+01:00Z",
+                 "valid": false
+--- a/spec/JSON-Schema-Test-Suite/tests/draft2019-09/optional/format/ipv4.json
++++ b/spec/JSON-Schema-Test-Suite/tests/draft2019-09/optional/format/ipv4.json
+@@ -64,12 +64,6 @@
+                 "valid": false
+             },
+             {
+-                "description": "leading zeroes should be rejected, as they are treated as octals",
+-                "comment": "see https://sick.codes/universal-netmask-npm-package-used-by-270000-projects-vulnerable-to-octal-input-data-server-side-request-forgery-remote-file-inclusion-local-file-inclusion-and-more-cve-2021-28918/",
+-                "data": "087.10.0.1",
+-                "valid": false
+-            },
+-            {
+                 "description": "value without leading zero is valid",
+                 "data": "87.10.0.1",
+                 "valid": true
+--- a/spec/JSON-Schema-Test-Suite/tests/draft2019-09/optional/format/time.json
++++ b/spec/JSON-Schema-Test-Suite/tests/draft2019-09/optional/format/time.json
+@@ -69,46 +69,6 @@
+                 "valid": false
+             },
+             {
+-                "description": "valid leap second, positive time-offset",
+-                "data": "01:29:60+01:30",
+-                "valid": true
+-            },
+-            {
+-                "description": "valid leap second, large positive time-offset",
+-                "data": "23:29:60+23:30",
+-                "valid": true
+-            },
+-            {
+-                "description": "invalid leap second, positive time-offset (wrong hour)",
+-                "data": "23:59:60+01:00",
+-                "valid": false
+-            },
+-            {
+-                "description": "invalid leap second, positive time-offset (wrong minute)",
+-                "data": "23:59:60+00:30",
+-                "valid": false
+-            },
+-            {
+-                "description": "valid leap second, negative time-offset",
+-                "data": "15:59:60-08:00",
+-                "valid": true
+-            },
+-            {
+-                "description": "valid leap second, large negative time-offset",
+-                "data": "00:29:60-23:30",
+-                "valid": true
+-            },
+-            {
+-                "description": "invalid leap second, negative time-offset (wrong hour)",
+-                "data": "23:59:60-01:00",
+-                "valid": false
+-            },
+-            {
+-                "description": "invalid leap second, negative time-offset (wrong minute)",
+-                "data": "23:59:60-00:30",
+-                "valid": false
+-            },
+-            {
+                 "description": "a valid time string with second fraction",
+                 "data": "23:20:50.52Z",
+                 "valid": true
+@@ -159,16 +119,6 @@
+                 "valid": false
+             },
+             {
+-                "description": "an invalid time string with invalid time numoffset hour",
+-                "data": "01:02:03+24:00",
+-                "valid": false
+-            },
+-            {
+-                "description": "an invalid time string with invalid time numoffset minute",
+-                "data": "01:02:03+00:60",
+-                "valid": false
+-            },
+-            {
+                 "description": "an invalid time string with invalid time with both Z and numoffset",
+                 "data": "01:02:03Z+00:30",
+                 "valid": false
+@@ -184,11 +134,6 @@
+                 "valid": false
+             },
+             {
+-                "description": "no time offset",
+-                "data": "12:00:00",
+-                "valid": false
+-            },
+-            {
+                 "description": "non-ascii digits should be rejected",
+                 "data": "1২:00:00Z",
+                 "valid": false
+--- a/spec/JSON-Schema-Test-Suite/tests/draft2020-12/optional/format/date-time.json
++++ b/spec/JSON-Schema-Test-Suite/tests/draft2020-12/optional/format/date-time.json
+@@ -59,11 +59,6 @@
+                 "valid": true
+             },
+             {
+-                "description": "a valid date-time with a leap second, with minus offset",
+-                "data": "1998-12-31T15:59:60.123-08:00",
+-                "valid": true
+-            },
+-            {
+                 "description": "an invalid date-time past leap second, UTC",
+                 "data": "1998-12-31T23:59:61Z",
+                 "valid": false
+@@ -84,11 +79,6 @@
+                 "valid": false
+             },
+             {
+-                "description": "an invalid offset in date-time string",
+-                "data": "1990-12-31T15:59:59-24:00",
+-                "valid": false
+-            },
+-            {
+                 "description": "an invalid closing Z after time-zone offset",
+                 "data": "1963-06-19T08:30:06.28123+01:00Z",
+                 "valid": false
+--- a/spec/JSON-Schema-Test-Suite/tests/draft2020-12/optional/format/ipv4.json
++++ b/spec/JSON-Schema-Test-Suite/tests/draft2020-12/optional/format/ipv4.json
+@@ -64,12 +64,6 @@
+                 "valid": false
+             },
+             {
+-                "description": "leading zeroes should be rejected, as they are treated as octals",
+-                "comment": "see https://sick.codes/universal-netmask-npm-package-used-by-270000-projects-vulnerable-to-octal-input-data-server-side-request-forgery-remote-file-inclusion-local-file-inclusion-and-more-cve-2021-28918/",
+-                "data": "087.10.0.1",
+-                "valid": false
+-            },
+-            {
+                 "description": "value without leading zero is valid",
+                 "data": "87.10.0.1",
+                 "valid": true
+--- a/spec/JSON-Schema-Test-Suite/tests/draft2020-12/optional/format/time.json
++++ b/spec/JSON-Schema-Test-Suite/tests/draft2020-12/optional/format/time.json
+@@ -69,46 +69,6 @@
+                 "valid": false
+             },
+             {
+-                "description": "valid leap second, positive time-offset",
+-                "data": "01:29:60+01:30",
+-                "valid": true
+-            },
+-            {
+-                "description": "valid leap second, large positive time-offset",
+-                "data": "23:29:60+23:30",
+-                "valid": true
+-            },
+-            {
+-                "description": "invalid leap second, positive time-offset (wrong hour)",
+-                "data": "23:59:60+01:00",
+-                "valid": false
+-            },
+-            {
+-                "description": "invalid leap second, positive time-offset (wrong minute)",
+-                "data": "23:59:60+00:30",
+-                "valid": false
+-            },
+-            {
+-                "description": "valid leap second, negative time-offset",
+-                "data": "15:59:60-08:00",
+-                "valid": true
+-            },
+-            {
+-                "description": "valid leap second, large negative time-offset",
+-                "data": "00:29:60-23:30",
+-                "valid": true
+-            },
+-            {
+-                "description": "invalid leap second, negative time-offset (wrong hour)",
+-                "data": "23:59:60-01:00",
+-                "valid": false
+-            },
+-            {
+-                "description": "invalid leap second, negative time-offset (wrong minute)",
+-                "data": "23:59:60-00:30",
+-                "valid": false
+-            },
+-            {
+                 "description": "a valid time string with second fraction",
+                 "data": "23:20:50.52Z",
+                 "valid": true
+@@ -149,26 +109,6 @@
+                 "valid": false
+             },
+             {
+-                "description": "an invalid time string with invalid leap second (wrong hour)",
+-                "data": "22:59:60Z",
+-                "valid": false
+-            },
+-            {
+-                "description": "an invalid time string with invalid leap second (wrong minute)",
+-                "data": "23:58:60Z",
+-                "valid": false
+-            },
+-            {
+-                "description": "an invalid time string with invalid time numoffset hour",
+-                "data": "01:02:03+24:00",
+-                "valid": false
+-            },
+-            {
+-                "description": "an invalid time string with invalid time numoffset minute",
+-                "data": "01:02:03+00:60",
+-                "valid": false
+-            },
+-            {
+                 "description": "an invalid time string with invalid time with both Z and numoffset",
+                 "data": "01:02:03Z+00:30",
+                 "valid": false
+@@ -184,11 +124,6 @@
+                 "valid": false
+             },
+             {
+-                "description": "no time offset",
+-                "data": "12:00:00",
+-                "valid": false
+-            },
+-            {
+                 "description": "non-ascii digits should be rejected",
+                 "data": "1২:00:00Z",
+                 "valid": false
+--- a/spec/JSON-Schema-Test-Suite/tests/draft6/optional/format/date-time.json
++++ b/spec/JSON-Schema-Test-Suite/tests/draft6/optional/format/date-time.json
+@@ -59,11 +59,6 @@
+                 "valid": true
+             },
+             {
+-                "description": "a valid date-time with a leap second, with minus offset",
+-                "data": "1998-12-31T15:59:60.123-08:00",
+-                "valid": true
+-            },
+-            {
+                 "description": "an invalid date-time past leap second, UTC",
+                 "data": "1998-12-31T23:59:61Z",
+                 "valid": false
+@@ -84,11 +79,6 @@
+                 "valid": false
+             },
+             {
+-                "description": "an invalid offset in date-time string",
+-                "data": "1990-12-31T15:59:59-24:00",
+-                "valid": false
+-            },
+-            {
+                 "description": "an invalid closing Z after time-zone offset",
+                 "data": "1963-06-19T08:30:06.28123+01:00Z",
+                 "valid": false
+--- a/spec/JSON-Schema-Test-Suite/tests/draft6/optional/format/ipv4.json
++++ b/spec/JSON-Schema-Test-Suite/tests/draft6/optional/format/ipv4.json
+@@ -64,12 +64,6 @@
+                 "valid": false
+             },
+             {
+-                "description": "leading zeroes should be rejected, as they are treated as octals",
+-                "comment": "see https://sick.codes/universal-netmask-npm-package-used-by-270000-projects-vulnerable-to-octal-input-data-server-side-request-forgery-remote-file-inclusion-local-file-inclusion-and-more-cve-2021-28918/",
+-                "data": "087.10.0.1",
+-                "valid": false
+-            },
+-            {
+                 "description": "value without leading zero is valid",
+                 "data": "87.10.0.1",
+                 "valid": true
+--- a/spec/JSON-Schema-Test-Suite/tests/draft7/optional/format/date-time.json
++++ b/spec/JSON-Schema-Test-Suite/tests/draft7/optional/format/date-time.json
+@@ -59,11 +59,6 @@
+                 "valid": true
+             },
+             {
+-                "description": "a valid date-time with a leap second, with minus offset",
+-                "data": "1998-12-31T15:59:60.123-08:00",
+-                "valid": true
+-            },
+-            {
+                 "description": "an invalid date-time past leap second, UTC",
+                 "data": "1998-12-31T23:59:61Z",
+                 "valid": false
+@@ -84,11 +79,6 @@
+                 "valid": false
+             },
+             {
+-                "description": "an invalid offset in date-time string",
+-                "data": "1990-12-31T15:59:59-24:00",
+-                "valid": false
+-            },
+-            {
+                 "description": "an invalid closing Z after time-zone offset",
+                 "data": "1963-06-19T08:30:06.28123+01:00Z",
+                 "valid": false
+--- a/spec/JSON-Schema-Test-Suite/tests/draft7/optional/format/ipv4.json
++++ b/spec/JSON-Schema-Test-Suite/tests/draft7/optional/format/ipv4.json
+@@ -64,12 +64,6 @@
+                 "valid": false
+             },
+             {
+-                "description": "leading zeroes should be rejected, as they are treated as octals",
+-                "comment": "see https://sick.codes/universal-netmask-npm-package-used-by-270000-projects-vulnerable-to-octal-input-data-server-side-request-forgery-remote-file-inclusion-local-file-inclusion-and-more-cve-2021-28918/",
+-                "data": "087.10.0.1",
+-                "valid": false
+-            },
+-            {
+                 "description": "value without leading zero is valid",
+                 "data": "87.10.0.1",
+                 "valid": true
+--- a/spec/JSON-Schema-Test-Suite/tests/draft7/optional/format/time.json
++++ b/spec/JSON-Schema-Test-Suite/tests/draft7/optional/format/time.json
+@@ -69,46 +69,6 @@
+                 "valid": false
+             },
+             {
+-                "description": "valid leap second, positive time-offset",
+-                "data": "01:29:60+01:30",
+-                "valid": true
+-            },
+-            {
+-                "description": "valid leap second, large positive time-offset",
+-                "data": "23:29:60+23:30",
+-                "valid": true
+-            },
+-            {
+-                "description": "invalid leap second, positive time-offset (wrong hour)",
+-                "data": "23:59:60+01:00",
+-                "valid": false
+-            },
+-            {
+-                "description": "invalid leap second, positive time-offset (wrong minute)",
+-                "data": "23:59:60+00:30",
+-                "valid": false
+-            },
+-            {
+-                "description": "valid leap second, negative time-offset",
+-                "data": "15:59:60-08:00",
+-                "valid": true
+-            },
+-            {
+-                "description": "valid leap second, large negative time-offset",
+-                "data": "00:29:60-23:30",
+-                "valid": true
+-            },
+-            {
+-                "description": "invalid leap second, negative time-offset (wrong hour)",
+-                "data": "23:59:60-01:00",
+-                "valid": false
+-            },
+-            {
+-                "description": "invalid leap second, negative time-offset (wrong minute)",
+-                "data": "23:59:60-00:30",
+-                "valid": false
+-            },
+-            {
+                 "description": "a valid time string with second fraction",
+                 "data": "23:20:50.52Z",
+                 "valid": true
+@@ -159,16 +119,6 @@
+                 "valid": false
+             },
+             {
+-                "description": "an invalid time string with invalid time numoffset hour",
+-                "data": "01:02:03+24:00",
+-                "valid": false
+-            },
+-            {
+-                "description": "an invalid time string with invalid time numoffset minute",
+-                "data": "01:02:03+00:60",
+-                "valid": false
+-            },
+-            {
+                 "description": "an invalid time string with invalid time with both Z and numoffset",
+                 "data": "01:02:03Z+00:30",
+                 "valid": false
+@@ -184,11 +134,6 @@
+                 "valid": false
+             },
+             {
+-                "description": "no time offset",
+-                "data": "12:00:00",
+-                "valid": false
+-            },
+-            {
+                 "description": "non-ascii digits should be rejected",
+                 "data": "1২:00:00Z",
+                 "valid": false

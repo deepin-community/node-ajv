@@ -1,0 +1,2126 @@
+Description: workaround tsc update
+Author: Yadd <yadd@debian.org>
+Forwarded: not-needed
+Last-Update: 2023-12-07
+
+--- a/spec/after_test.ts
++++ b/spec/after_test.ts
+@@ -19,13 +19,17 @@
+ 
+ export function afterEach(res: TestResult): void {
+   // console.log(res.errors);
++// @ts-ignore
+   res.valid.should.be.a("boolean")
+   if (res.valid === true) {
++// @ts-ignore
+     should.equal(res.errors, null)
+   } else {
+     const errs = res.errors as ErrorObject[]
++// @ts-ignore
+     errs.should.be.an("array")
+     for (const err of errs) {
++// @ts-ignore
+       err.should.be.an("object")
+     }
+   }
+--- a/spec/ajv.spec.ts
++++ b/spec/ajv.spec.ts
+@@ -14,15 +14,20 @@
+   })
+ 
+   it("should create instance", () => {
++// @ts-ignore
+     ajv.should.be.instanceof(_Ajv)
+   })
+ 
+   describe("compile method", () => {
+     it("should compile schema and return validating function", () => {
+       const validate = ajv.compile({type: "integer"})
++// @ts-ignore
+       validate.should.be.a("function")
++// @ts-ignore
+       validate(1).should.equal(true)
++// @ts-ignore
+       validate(1.1).should.equal(false)
++// @ts-ignore
+       validate("1").should.equal(false)
+     })
+ 
+@@ -34,17 +39,20 @@
+       }
+       const v1 = ajv.compile(schema)
+       const v2 = ajv.compile(schema)
++// @ts-ignore
+       v1.should.equal(v2)
+     })
+ 
+     it("should throw if different schema has the same id", () => {
+       ajv.compile({$id: "//e.com/int.json", type: "integer"})
++// @ts-ignore
+       should.throw(() => {
+         ajv.compile({$id: "//e.com/int.json", type: "integer", minimum: 1})
+       }, /already exists/)
+     })
+ 
+     it("should throw if invalid schema is compiled", () => {
++// @ts-ignore
+       should.throw(() => {
+         ajv.compile({type: null})
+       }, /must be equal to one of the allowed values/)
+@@ -55,10 +63,13 @@
+       _ajv.addKeyword({keyword: "even", code: badEvenCode})
+       let schema = {even: true}
+       const validate: any = _ajv.compile(schema)
++// @ts-ignore
+       validate(2).should.equal(true)
++// @ts-ignore
+       validate(3).should.equal(false)
+ 
+       schema = {even: false}
++// @ts-ignore
+       should.throw(() => {
+         _ajv.compile(schema)
+       }, /Unexpected token/)
+@@ -72,25 +83,38 @@
+ 
+   describe("validate method", () => {
+     it("should compile schema and validate data against it", () => {
++// @ts-ignore
+       ajv.validate({type: "integer"}, 1).should.equal(true)
++// @ts-ignore
+       ajv.validate({type: "integer"}, "1").should.equal(false)
++// @ts-ignore
+       ajv.validate({type: "string"}, "a").should.equal(true)
++// @ts-ignore
+       ajv.validate({type: "string"}, 1).should.equal(false)
+     })
+ 
+     it("should validate against previously compiled schema by id (also see addSchema)", () => {
++// @ts-ignore
+       ajv.validate({$id: "//e.com/int.json", type: "integer"}, 1).should.equal(true)
++// @ts-ignore
+       ajv.validate("//e.com/int.json", 1).should.equal(true)
++// @ts-ignore
+       ajv.validate("//e.com/int.json", "1").should.equal(false)
+ 
++// @ts-ignore
+       ajv.compile({$id: "//e.com/str.json", type: "string"}).should.be.a("function")
++// @ts-ignore
+       ajv.validate("//e.com/str.json", "a").should.equal(true)
++// @ts-ignore
+       ajv.validate("//e.com/str.json", 1).should.equal(false)
+     })
+ 
+     it("should throw exception if no schema with ref", () => {
++// @ts-ignore
+       ajv.validate({$id: "integer", type: "integer"}, 1).should.equal(true)
++// @ts-ignore
+       ajv.validate("integer", 1).should.equal(true)
++// @ts-ignore
+       should.throw(() => {
+         ajv.validate("string", "foo")
+       }, /no schema with key or ref/)
+@@ -105,7 +129,9 @@
+         },
+       })
+ 
++// @ts-ignore
+       ajv.validate("http://e.com/types.json#/definitions/int", 1).should.equal(true)
++// @ts-ignore
+       ajv.validate("http://e.com/types.json#/definitions/int", "1").should.equal(false)
+     })
+ 
+@@ -118,7 +144,9 @@
+         },
+       })
+ 
++// @ts-ignore
+       ajv.validate("http://e.com/types.json#int", 1).should.equal(true)
++// @ts-ignore
+       ajv.validate("http://e.com/types.json#int", "1").should.equal(false)
+     })
+   })
+@@ -129,34 +157,51 @@
+       const validate = ajv.getSchema("int")
+       assert(typeof validate == "function")
+ 
++// @ts-ignore
+       validate(1).should.equal(true)
++// @ts-ignore
+       validate(1.1).should.equal(false)
++// @ts-ignore
+       validate("1").should.equal(false)
++// @ts-ignore
+       ajv.validate("int", 1).should.equal(true)
++// @ts-ignore
+       ajv.validate("int", "1").should.equal(false)
+     })
+ 
+     it("should add and compile schema without key", () => {
+       ajv.addSchema({type: "integer"})
++// @ts-ignore
+       ajv.validate("", 1).should.equal(true)
++// @ts-ignore
+       ajv.validate("", "1").should.equal(false)
+     })
+ 
+     it("should add and compile schema with id", () => {
+       ajv.addSchema({$id: "//e.com/int.json", type: "integer"})
++// @ts-ignore
+       ajv.validate("//e.com/int.json", 1).should.equal(true)
++// @ts-ignore
+       ajv.validate("//e.com/int.json", "1").should.equal(false)
+     })
+ 
+     it("should normalize schema keys and ids", () => {
+       ajv.addSchema({$id: "//e.com/int.json#", type: "integer"}, "int#")
++// @ts-ignore
+       ajv.validate("int", 1).should.equal(true)
++// @ts-ignore
+       ajv.validate("int", "1").should.equal(false)
++// @ts-ignore
+       ajv.validate("//e.com/int.json", 1).should.equal(true)
++// @ts-ignore
+       ajv.validate("//e.com/int.json", "1").should.equal(false)
++// @ts-ignore
+       ajv.validate("int#/", 1).should.equal(true)
++// @ts-ignore
+       ajv.validate("int#/", "1").should.equal(false)
++// @ts-ignore
+       ajv.validate("//e.com/int.json#/", 1).should.equal(true)
++// @ts-ignore
+       ajv.validate("//e.com/int.json#/", "1").should.equal(false)
+     })
+ 
+@@ -171,19 +216,28 @@
+       assert(typeof validate0 == "function")
+       assert(typeof validate1 == "function")
+ 
++// @ts-ignore
+       validate0(1).should.equal(true)
++// @ts-ignore
+       validate0("1").should.equal(false)
++// @ts-ignore
+       validate1("a").should.equal(true)
++// @ts-ignore
+       validate1(1).should.equal(false)
+ 
++// @ts-ignore
+       ajv.validate("//e.com/int.json", 1).should.equal(true)
++// @ts-ignore
+       ajv.validate("//e.com/int.json", "1").should.equal(false)
++// @ts-ignore
+       ajv.validate("//e.com/str.json", "a").should.equal(true)
++// @ts-ignore
+       ajv.validate("//e.com/str.json", 1).should.equal(false)
+     })
+ 
+     it("should throw on duplicate key", () => {
+       ajv.addSchema({type: "integer"}, "int")
++// @ts-ignore
+       should.throw(() => {
+         ajv.addSchema({type: "integer", minimum: 1}, "int")
+       }, /already exists/)
+@@ -191,9 +245,11 @@
+ 
+     it("should throw on duplicate normalized key", () => {
+       ajv.addSchema({type: "number"}, "num")
++// @ts-ignore
+       should.throw(() => {
+         ajv.addSchema({type: "integer"}, "num#")
+       }, /already exists/)
++// @ts-ignore
+       should.throw(() => {
+         ajv.addSchema({type: "integer"}, "num#/")
+       }, /already exists/)
+@@ -201,36 +257,42 @@
+ 
+     it("should allow only one schema without key and id", () => {
+       ajv.addSchema({type: "number"})
++// @ts-ignore
+       should.throw(() => {
+         ajv.addSchema({type: "integer"})
+       }, /already exists/)
++// @ts-ignore
+       should.throw(() => {
+         ajv.addSchema({type: "integer"}, "")
+       }, /already exists/)
++// @ts-ignore
+       should.throw(() => {
+         ajv.addSchema({type: "integer"}, "#")
+       }, /already exists/)
+     })
+ 
+     it("should throw if schema is not an object", () => {
++// @ts-ignore
+       should.throw(() => {
+-        // @ts-expect-error
++// @ts-ignore
+         ajv.addSchema("foo")
+       }, /schema must be object or boolean/)
+     })
+ 
+     it("should throw if schema id is not a string", () => {
+       try {
+-        // @ts-expect-error
++// @ts-ignore
+         ajv.addSchema({$id: 1, type: "integer"})
+         throw new Error("should have throw exception")
+       } catch (e) {
++// @ts-ignore
+         ;(e as Error).message.should.equal("schema $id must be string")
+       }
+     })
+ 
+     it("should return instance of itself", () => {
+       const res = ajv.addSchema({type: "integer"}, "int")
++// @ts-ignore
+       res.should.equal(ajv)
+     })
+   })
+@@ -240,7 +302,9 @@
+       ajv.addSchema({type: "integer"}, "int")
+       const validate = ajv.getSchema("int")
+       assert(typeof validate == "function")
++// @ts-ignore
+       validate(1).should.equal(true)
++// @ts-ignore
+       validate("1").should.equal(false)
+     })
+ 
+@@ -248,7 +312,9 @@
+       ajv.addSchema({$id: "//e.com/int.json", type: "integer"})
+       const validate = ajv.getSchema("//e.com/int.json")
+       assert(typeof validate == "function")
++// @ts-ignore
+       validate(1).should.equal(true)
++// @ts-ignore
+       validate("1").should.equal(false)
+     })
+ 
+@@ -256,7 +322,9 @@
+       ajv.addSchema({type: "integer"})
+       const validate = ajv.getSchema("")
+       assert(typeof validate == "function")
++// @ts-ignore
+       validate(1).should.equal(true)
++// @ts-ignore
+       validate("1").should.equal(false)
+     })
+ 
+@@ -271,7 +339,9 @@
+ 
+       const vInt = ajv.getSchema("http://e.com/types.json#/definitions/int")
+       assert(typeof vInt == "function")
++// @ts-ignore
+       vInt(1).should.equal(true)
++// @ts-ignore
+       vInt("1").should.equal(false)
+     })
+ 
+@@ -286,7 +356,9 @@
+ 
+       const vInt = ajv.getSchema("//e.com/types.json#/definitions/int")
+       assert(typeof vInt == "function")
++// @ts-ignore
+       vInt(1).should.equal(true)
++// @ts-ignore
+       vInt("1").should.equal(false)
+     })
+ 
+@@ -301,7 +373,9 @@
+ 
+       const vInt = ajv.getSchema("http://e.com/types.json#int")
+       assert(typeof vInt == "function")
++// @ts-ignore
+       vInt(1).should.equal(true)
++// @ts-ignore
+       vInt("1").should.equal(false)
+     })
+   })
+@@ -312,13 +386,15 @@
+       ajv.addSchema(schema, "int")
+       const v = ajv.getSchema("int")
+       assert(typeof v == "function")
++// @ts-ignore
+       v.should.be.a("function")
+-      //@ts-expect-error
++// @ts-ignore
+       ajv._cache.get(schema).validate.should.equal(v)
+ 
+       ajv.removeSchema("int")
++// @ts-ignore
+       should.not.exist(ajv.getSchema("int"))
+-      //@ts-expect-error
++// @ts-ignore
+       should.not.exist(ajv._cache.get(schema))
+     })
+ 
+@@ -328,39 +404,44 @@
+ 
+       const v = ajv.getSchema("//e.com/int.json")
+       assert(typeof v == "function")
++// @ts-ignore
+       v.should.be.a("function")
+-      //@ts-expect-error
++// @ts-ignore
+       ajv._cache.get(schema).validate.should.equal(v)
+ 
+       ajv.removeSchema("//e.com/int.json")
++// @ts-ignore
+       should.not.exist(ajv.getSchema("//e.com/int.json"))
+-      //@ts-expect-error
++// @ts-ignore
+       should.not.exist(ajv._cache.get(schema))
+     })
+ 
+     it("should remove schema by schema object", () => {
+       const schema = {type: "integer"}
+       ajv.addSchema(schema)
+-      //@ts-expect-error
++// @ts-ignore
+       ajv._cache.get(schema).should.be.an("object")
+       ajv.removeSchema(schema)
+-      //@ts-expect-error
++// @ts-ignore
+       should.not.exist(ajv._cache.get(schema))
+     })
+ 
+     it("should remove schema with id by schema object", () => {
+       const schema = {$id: "//e.com/int.json", type: "integer"}
+       ajv.addSchema(schema)
+-      //@ts-expect-error
++// @ts-ignore
+       ajv._cache.get(schema).should.be.an("object")
+       ajv.removeSchema(schema)
++// @ts-ignore
+       should.not.exist(ajv.getSchema("//e.com/int.json"))
+-      //@ts-expect-error
++// @ts-ignore
+       should.not.exist(ajv._cache.get(schema))
+     })
+ 
+     it("should not throw if there is no schema with passed id", () => {
++// @ts-ignore
+       should.not.exist(ajv.getSchema("//e.com/int.json"))
++// @ts-ignore
+       should.not.throw(() => {
+         ajv.removeSchema("//e.com/int.json")
+       })
+@@ -369,48 +450,49 @@
+     it("should remove all schemas but meta-schemas if called without an arguments", () => {
+       const schema1 = {$id: "//e.com/int.json", type: "integer"}
+       ajv.addSchema(schema1)
+-      //@ts-expect-error
++// @ts-ignore
+       ajv._cache.get(schema1).should.be.an("object")
+ 
+       const schema2 = {type: "integer"}
+       ajv.addSchema(schema2)
+-      //@ts-expect-error
++// @ts-ignore
+       ajv._cache.get(schema2).should.be.an("object")
+ 
+       ajv.removeSchema()
+-      //@ts-expect-error
++// @ts-ignore
+       should.not.exist(ajv._cache.get(schema1))
+-      //@ts-expect-error
++// @ts-ignore
+       should.not.exist(ajv._cache.get(schema2))
+     })
+ 
+     it("should remove all schemas but meta-schemas with key/id matching pattern", () => {
+       const schema1 = {$id: "//e.com/int.json", type: "integer"}
+       ajv.addSchema(schema1)
+-      //@ts-expect-error
++// @ts-ignore
+       ajv._cache.get(schema1).should.be.an("object")
+ 
+       const schema2 = {$id: "str.json", type: "string"}
+       ajv.addSchema(schema2, "//e.com/str.json")
+-      //@ts-expect-error
++// @ts-ignore
+       ajv._cache.get(schema2).should.be.an("object")
+ 
+       const schema3 = {type: "integer"}
+       ajv.addSchema(schema3)
+-      //@ts-expect-error
++// @ts-ignore
+       ajv._cache.get(schema3).should.be.an("object")
+ 
+       ajv.removeSchema(/e\.com/)
+-      //@ts-expect-error
++// @ts-ignore
+       should.not.exist(ajv._cache.get(schema1))
+-      //@ts-expect-error
++// @ts-ignore
+       should.not.exist(ajv._cache.get(schema2))
+-      //@ts-expect-error
++// @ts-ignore
+       ajv._cache.get(schema3).should.be.an("object")
+     })
+ 
+     it("should return instance of itself", () => {
+       const res = ajv.addSchema({type: "integer"}, "int").removeSchema("int")
++// @ts-ignore
+       res.should.equal(ajv)
+     })
+   })
+@@ -440,6 +522,7 @@
+ 
+     it("should return instance of itself", () => {
+       const res = ajv.addFormat("identifier", /^[a-z_$][a-z0-9_$]*$/i)
++// @ts-ignore
+       res.should.equal(ajv)
+     })
+ 
+@@ -448,8 +531,11 @@
+         type: ["number", "string"],
+         format: "identifier",
+       })
++// @ts-ignore
+       validate("Abc1").should.equal(true)
++// @ts-ignore
+       validate("123").should.equal(false)
++// @ts-ignore
+       validate(123).should.equal(true)
+     }
+ 
+@@ -466,9 +552,13 @@
+           type: ["string", "number"],
+           format: "positive",
+         })
++// @ts-ignore
+         validate(-2).should.equal(false)
++// @ts-ignore
+         validate(0).should.equal(false)
++// @ts-ignore
+         validate(2).should.equal(true)
++// @ts-ignore
+         validate("abc").should.equal(true)
+       })
+ 
+@@ -491,9 +581,13 @@
+             frmt: {type: "string"},
+           },
+         })
++// @ts-ignore
+         validate({data: -2, frmt: "positive"}).should.equal(false)
++// @ts-ignore
+         validate({data: 0, frmt: "positive"}).should.equal(false)
++// @ts-ignore
+         validate({data: 2, frmt: "positive"}).should.equal(true)
++// @ts-ignore
+         validate({data: "abc", frmt: "positive"}).should.equal(true)
+       })
+     })
+@@ -506,7 +600,9 @@
+         type: "number",
+       })
+ 
++// @ts-ignore
+       valid.should.equal(true)
++// @ts-ignore
+       should.equal(ajv.errors, null)
+ 
+       valid = ajv.validateSchema({
+@@ -514,15 +610,21 @@
+         type: "wrong_type",
+       })
+ 
++// @ts-ignore
+       valid.should.equal(false)
+       assert(Array.isArray(ajv.errors))
++// @ts-ignore
+       ajv.errors.length.should.equal(3)
++// @ts-ignore
+       ajv.errors[0].keyword.should.equal("enum")
++// @ts-ignore
+       ajv.errors[1].keyword.should.equal("type")
++// @ts-ignore
+       ajv.errors[2].keyword.should.equal("anyOf")
+     })
+ 
+     it("should throw exception if meta-schema is unknown", () => {
++// @ts-ignore
+       should.throw(() => {
+         ajv.validateSchema({
+           $schema: "http://example.com/unknown/schema#",
+@@ -532,9 +634,10 @@
+     })
+ 
+     it("should throw exception if $schema is not a string", () => {
++// @ts-ignore
+       should.throw(() => {
+         ajv.validateSchema({
+-          //@ts-expect-error
++// @ts-ignore
+           $schema: {},
+           type: "number",
+         })
+@@ -585,7 +688,9 @@
+       })
+ 
+       function passValidationThrowCompile(schema: SchemaObject) {
++// @ts-ignore
+         ajv.validateSchema(schema).should.equal(true)
++// @ts-ignore
+         should.throw(() => {
+           ajv.compile(schema)
+         }, /value must be/)
+--- a/spec/coercion.spec.ts
++++ b/spec/coercion.spec.ts
+@@ -191,6 +191,7 @@
+       instances.forEach((_ajv) => {
+         const valid = _ajv.validate(schema, test.from)
+         //if (valid !== canCoerce) console.log('true', toType, fromType, test, ajv.errors);
++// @ts-ignore
+         valid.should.equal(canCoerce)
+       })
+     })
+@@ -205,6 +206,7 @@
+       instances.forEach((_ajv) => {
+         const valid = _ajv.validate(schema, test.from)
+         if (valid !== canCoerce) console.log(toType, ".", fromType, test, schema, ajv.errors)
++// @ts-ignore
+         valid.should.equal(canCoerce)
+       })
+     })
+@@ -238,7 +240,9 @@
+       function testCoercion(_ajv, _schema, fromData, toData) {
+         const valid = _ajv.validate(_schema, fromData)
+         //if (valid !== canCoerce) console.log(schema, fromData, toData);
++// @ts-ignore
+         valid.should.equal(canCoerce)
++// @ts-ignore
+         if (valid) fromData.should.eql(toData)
+       }
+     })
+@@ -257,31 +261,49 @@
+     instances.forEach((_ajv) => {
+       let data
+ 
++// @ts-ignore
+       _ajv.validate(schema, (data = {foo: "1"})).should.equal(true)
++// @ts-ignore
+       data.should.eql({foo: 1})
+ 
++// @ts-ignore
+       _ajv.validate(schema, (data = {foo: "1.5"})).should.equal(true)
++// @ts-ignore
+       data.should.eql({foo: 1.5})
+ 
++// @ts-ignore
+       _ajv.validate(schema, (data = {foo: "false"})).should.equal(true)
++// @ts-ignore
+       data.should.eql({foo: false})
+ 
++// @ts-ignore
+       _ajv.validate(schema, (data = {foo: 1})).should.equal(true)
++// @ts-ignore
+       data.should.eql({foo: 1}) // no coercion
+ 
++// @ts-ignore
+       _ajv.validate(schema, (data = {foo: true})).should.equal(true)
++// @ts-ignore
+       data.should.eql({foo: true}) // no coercion
+ 
++// @ts-ignore
+       _ajv.validate(schema, (data = {foo: null})).should.equal(true)
++// @ts-ignore
+       data.should.eql({foo: null}) // no coercion
+ 
++// @ts-ignore
+       _ajv.validate(schema, (data = {foo: "abc"})).should.equal(false)
++// @ts-ignore
+       data.should.eql({foo: "abc"}) // can't coerce
+ 
++// @ts-ignore
+       _ajv.validate(schema, (data = {foo: {}})).should.equal(false)
++// @ts-ignore
+       data.should.eql({foo: {}}) // can't coerce
+ 
++// @ts-ignore
+       _ajv.validate(schema, (data = {foo: []})).should.equal(false)
++// @ts-ignore
+       data.should.eql({foo: []}) // can't coerce
+     })
+   })
+@@ -299,28 +321,44 @@
+     instances.forEach((_ajv) => {
+       let data
+ 
++// @ts-ignore
+       _ajv.validate(schema, (data = {foo: "1"})).should.equal(true)
++// @ts-ignore
+       data.should.eql({foo: 1})
+ 
++// @ts-ignore
+       _ajv.validate(schema, (data = {foo: "false"})).should.equal(true)
++// @ts-ignore
+       data.should.eql({foo: false})
+ 
++// @ts-ignore
+       _ajv.validate(schema, (data = {foo: 1})).should.equal(true)
++// @ts-ignore
+       data.should.eql({foo: 1}) // no coercion
+ 
++// @ts-ignore
+       _ajv.validate(schema, (data = {foo: true})).should.equal(true)
++// @ts-ignore
+       data.should.eql({foo: true}) // no coercion
+ 
++// @ts-ignore
+       _ajv.validate(schema, (data = {foo: null})).should.equal(true)
++// @ts-ignore
+       data.should.eql({foo: null}) // no coercion
+ 
++// @ts-ignore
+       _ajv.validate(schema, (data = {foo: "abc"})).should.equal(false)
++// @ts-ignore
+       data.should.eql({foo: "abc"}) // can't coerce
+ 
++// @ts-ignore
+       _ajv.validate(schema, (data = {foo: {}})).should.equal(false)
++// @ts-ignore
+       data.should.eql({foo: {}}) // can't coerce
+ 
++// @ts-ignore
+       _ajv.validate(schema, (data = {foo: []})).should.equal(false)
++// @ts-ignore
+       data.should.eql({foo: []}) // can't coerce
+     })
+   })
+@@ -341,11 +379,15 @@
+ 
+     instances.forEach((_ajv) => {
+       const data: any = {foo: "123", bar: "bar"}
++// @ts-ignore
+       _ajv.validate(schema, data).should.equal(false)
++// @ts-ignore
+       data.should.eql({foo: 123, bar: "bar"})
+ 
+       const data2: any = ["123", "bar"]
++// @ts-ignore
+       _ajv.validate(schema2, data2).should.equal(false)
++// @ts-ignore
+       data2.should.eql([123, "bar"])
+     })
+   })
+@@ -411,7 +453,9 @@
+       function testCoercion(_schema, fromData, toData) {
+         const valid = _ajv.validate(_schema, fromData)
+         // if (!valid) console.log(schema, fromData, toData);
++// @ts-ignore
+         valid.should.equal(true)
++// @ts-ignore
+         fromData.should.eql(toData)
+       }
+     })
+@@ -425,12 +469,17 @@
+ 
+     instances.forEach((_ajv) => {
+       const validate = _ajv.compile(schema)
++// @ts-ignore
+       validate(9).should.equal(false)
++// @ts-ignore
+       validate.errors?.length.should.equal(1)
+ 
++// @ts-ignore
+       validate(11).should.equal(true)
+ 
++// @ts-ignore
+       validate("foo").should.equal(false)
++// @ts-ignore
+       validate.errors?.length.should.equal(1)
+     })
+   })
+@@ -444,10 +493,14 @@
+ 
+     instances.forEach((_ajv) => {
+       const validate = _ajv.compile(schema)
++// @ts-ignore
+       validate([1, "2", 3]).should.equal(true)
+ 
++// @ts-ignore
+       validate([1, "2", 2]).should.equal(false)
++// @ts-ignore
+       validate.errors?.length.should.equal(1)
++// @ts-ignore
+       validate.errors?.[0].keyword.should.equal("uniqueItems")
+     })
+   })
+@@ -461,9 +514,12 @@
+ 
+     instances.forEach((_ajv) => {
+       const validate = _ajv.compile(schema)
++// @ts-ignore
+       validate([1, "2", 3]).should.equal(true)
+ 
++// @ts-ignore
+       validate([1, "3", 4]).should.equal(false)
++// @ts-ignore
+       validate.errors?.pop()?.keyword.should.equal("contains")
+     })
+   })
+--- a/spec/errors.spec.ts
++++ b/spec/errors.spec.ts
+@@ -287,7 +287,9 @@
+ 
+       const validate = ajv.compile(schema)
+ 
++// @ts-ignore
+       validate({}).should.equal(false)
++// @ts-ignore
+       validate.errors?.should.have.length(2)
+     })
+ 
+@@ -305,7 +307,9 @@
+ 
+       const validate = ajv.compile(schema)
+ 
++// @ts-ignore
+       validate({requiredProperties: ["foo", "bar"]}).should.equal(false)
++// @ts-ignore
+       validate.errors?.should.have.length(2)
+     })
+ 
+--- a/spec/issues/204_options_schemas_data_together.spec.ts
++++ b/spec/issues/204_options_schemas_data_together.spec.ts
+@@ -12,10 +12,14 @@
+     const schema = {const: 42}
+     const validate = ajv.compile(schema)
+ 
++// @ts-ignore
+     validate(42).should.equal(true)
++// @ts-ignore
+     validate(43).should.equal(false)
+ 
++// @ts-ignore
+     ajv.validate("str", "foo").should.equal(true)
++// @ts-ignore
+     ajv.validate("str", 42).should.equal(false)
+   })
+ })
+--- a/spec/issues/210_mutual_recur_frags.spec.ts
++++ b/spec/issues/210_mutual_recur_frags.spec.ts
+@@ -36,7 +36,9 @@
+         })
+ 
+         const validate = ajv.compile({$ref: "foo#/definitions/bar"})
++// @ts-ignore
+         validate({baz: {quux: {baz: 42}}}).should.equal(true)
++// @ts-ignore
+         validate({baz: {quux: {baz: "foo"}}}).should.equal(false)
+       }
+     }
+@@ -77,7 +79,9 @@
+ 
+         const validate = ajv.compile({$ref: "foo#/definitions/bar"})
+ 
++// @ts-ignore
+         validate({baz: {quux: {baz: 42}}}).should.equal(true)
++// @ts-ignore
+         validate({baz: {quux: {baz: "foo"}}}).should.equal(false)
+       }
+     }
+--- a/spec/issues/50_refs_with_definitions.spec.ts
++++ b/spec/issues/50_refs_with_definitions.spec.ts
+@@ -62,7 +62,9 @@
+       role: "Programmer",
+     })
+ 
++// @ts-ignore
+     result.should.equal(true)
++// @ts-ignore
+     should.equal(ajv.errors, null)
+   }
+ })
+--- a/spec/issues/743_removeAdditional_to_remove_proto.spec.ts
++++ b/spec/issues/743_removeAdditional_to_remove_proto.spec.ts
+@@ -35,7 +35,9 @@
+ 
+     const data = {obj: obj}
+ 
++// @ts-ignore
+     ajv.validate(schema, data).should.equal(true)
++// @ts-ignore
+     Object.keys(data.obj).should.eql(["a", "b"])
+   })
+ })
+--- a/spec/issues/768_passContext_recursive_ref.spec.ts
++++ b/spec/issues/768_passContext_recursive_ref.spec.ts
+@@ -14,7 +14,9 @@
+       const validate = getValidate(true)
+       const self = {}
+       validate.call(self, {bar: "a", baz: {bar: "b"}})
++// @ts-ignore
+       contexts.should.have.length(2)
++// @ts-ignore
+       contexts.forEach((ctx) => ctx.should.equal(self))
+     })
+   })
+@@ -23,7 +25,9 @@
+     it("should pass ajv instance as context to user-defined keyword validation function", () => {
+       const validate = getValidate(false)
+       validate({bar: "a", baz: {bar: "b"}})
++// @ts-ignore
+       contexts.should.have.length(2)
++// @ts-ignore
+       contexts.forEach((ctx) => ctx.should.equal(ajv))
+     })
+   })
+@@ -33,7 +37,9 @@
+       const validate = getValidateFragments(true)
+       const self = {}
+       validate.call(self, {baz: {corge: "a", quux: {baz: {corge: "b"}}}})
++// @ts-ignore
+       contexts.should.have.length(2)
++// @ts-ignore
+       contexts.forEach((ctx) => ctx.should.equal(self))
+     })
+   })
+@@ -42,7 +48,9 @@
+     it("should pass ajv instance as context to user-defined keyword validation function", () => {
+       const validate = getValidateFragments(false)
+       validate({baz: {corge: "a", quux: {baz: {corge: "b"}}}})
++// @ts-ignore
+       contexts.should.have.length(2)
++// @ts-ignore
+       contexts.forEach((ctx) => ctx.should.equal(ajv))
+     })
+   })
+--- a/spec/issues/815_id_updates_ref_base.spec.ts
++++ b/spec/issues/815_id_updates_ref_base.spec.ts
+@@ -37,6 +37,7 @@
+       newRoot: {
+         name: "test",
+       },
++// @ts-ignore
+     }).should.equal(true)
+ 
+     validate({
+@@ -46,6 +47,7 @@
+           name: "test2",
+         },
+       },
++// @ts-ignore
+     }).should.equal(true)
+   })
+ 
+@@ -59,6 +61,7 @@
+           },
+         },
+       },
++// @ts-ignore
+     }).should.equal(false)
+   })
+ })
+--- a/spec/issues/8_shared_refs.spec.ts
++++ b/spec/issues/8_shared_refs.spec.ts
+@@ -42,10 +42,13 @@
+ 
+   function spec(ajv: AjvCore | AjvPack): void {
+     let result = ajv.validate("obj.json#", {foo: "abc", bar: "def"})
++// @ts-ignore
+     result.should.equal(true)
+ 
+     result = ajv.validate("obj.json#", {foo: "abcde", bar: "fghg"})
++// @ts-ignore
+     result.should.equal(false)
++// @ts-ignore
+     ajv.errors?.should.have.length(1)
+   }
+ })
+--- a/spec/issues/955_removeAdditional_custom_keywords.spec.ts
++++ b/spec/issues/955_removeAdditional_custom_keywords.spec.ts
+@@ -34,14 +34,18 @@
+       foo: "   bar   ",
+       baz: "",
+     }
++// @ts-ignore
+     validate(data).should.equal(true)
++// @ts-ignore
+     data.should.not.have.property("baz")
+ 
+     data = {
+       foo: "   ba   ",
+       baz: "",
+     }
++// @ts-ignore
+     validate(data).should.equal(false)
++// @ts-ignore
+     data.should.not.have.property("baz")
+   })
+ })
+--- a/spec/json-schema.spec.ts
++++ b/spec/json-schema.spec.ts
+@@ -222,6 +222,7 @@
+     }
+     for (const id in remoteRefs) ajv.addSchema(remoteRefs[id], id)
+     for (const id in remotes) ajv.addSchema(remotes[id], id)
++// @ts-ignore
+     ajvFormats(ajv)
+   }
+ 
+--- a/spec/keyword.spec.ts
++++ b/spec/keyword.spec.ts
+@@ -279,6 +279,7 @@
+         _ajv.addKeyword({
+           keyword: "macroRef",
+           macro(schema, _parentSchema, it) {
++// @ts-ignore
+             it.baseId.should.equal("#")
+             const ref = schema.$ref
+             const validate = _ajv.getSchema(ref)
+@@ -529,6 +530,7 @@
+       ajv.addKeyword({keyword: "invalid", macro: macroInvalid})
+       const schema = {invalid: true}
+ 
++// @ts-ignore
+       should.throw(() => {
+         ajv.compile(schema)
+       }, /type must be equal to one of the allowed values/)
+@@ -721,6 +723,7 @@
+         },
+         2
+       )
++// @ts-ignore
+       macroCalled.should.equal(true)
+ 
+       function validateEven(schema, data) {
+@@ -749,6 +752,7 @@
+         },
+         2
+       )
++// @ts-ignore
+       macroCalled.should.equal(true)
+       shouldBeInvalidSchema({
+         type: "number",
+@@ -798,6 +802,7 @@
+     })
+ 
+     it('should fail if "macro" keyword definition has "$data" but no "code" or "validate"', () => {
++// @ts-ignore
+       should.throw(() => {
+         ajv.addKeyword({
+           keyword: "even",
+@@ -1015,6 +1020,7 @@
+   ) {
+     delete error.schema
+     delete error.data
++// @ts-ignore
+     error.should.eql({
+       keyword: "x-range",
+       instancePath,
+@@ -1046,12 +1052,15 @@
+   }
+ 
+   function shouldBeValid(validate, data) {
++// @ts-ignore
+     validate(data).should.equal(true)
+     should.not.exist(validate.errors)
+   }
+ 
+   function shouldBeInvalid(validate, data, numErrors = 1) {
++// @ts-ignore
+     validate(data).should.equal(false)
++// @ts-ignore
+     validate.errors.should.have.length(numErrors)
+   }
+ 
+@@ -1127,6 +1136,7 @@
+ 
+     it("should return instance of itself", () => {
+       const res = ajv.addKeyword("any")
++// @ts-ignore
+       res.should.equal(ajv)
+     })
+ 
+@@ -1156,7 +1166,9 @@
+         type: "number",
+         min: 0,
+       })
++// @ts-ignore
+       validate(1).should.equal(true)
++// @ts-ignore
+       validate(-1).should.equal(false)
+     })
+ 
+@@ -1172,6 +1184,7 @@
+   describe("getKeyword", () => {
+     // TODO update this test
+     it("should return false for unknown keywords", () => {
++// @ts-ignore
+       ajv.getKeyword("unknown").should.equal(false)
+     })
+ 
+@@ -1185,6 +1198,7 @@
+       ajv.addKeyword(definition)
+       const def = ajv.getKeyword("mykeyword")
+       assert(typeof def == "object")
++// @ts-ignore
+       def.keyword.should.equal("mykeyword")
+     })
+   })
+@@ -1202,7 +1216,9 @@
+       const schema = {type: "number", positive: true}
+ 
+       let validate = ajv.compile(schema)
++// @ts-ignore
+       validate(0).should.equal(false)
++// @ts-ignore
+       validate(1).should.equal(true)
+ 
+       should.throw(() => {
+@@ -1218,6 +1234,7 @@
+       ajv.removeKeyword("positive")
+       ajv.removeSchema(schema)
+       validate = ajv.compile(schema)
++// @ts-ignore
+       validate(-1).should.equal(true)
+       ajv.removeSchema(schema)
+ 
+@@ -1230,8 +1247,11 @@
+       })
+ 
+       validate = ajv.compile(schema)
++// @ts-ignore
+       validate(-1).should.equal(false)
++// @ts-ignore
+       validate(0).should.equal(true)
++// @ts-ignore
+       validate(1).should.equal(true)
+     })
+ 
+@@ -1240,16 +1260,22 @@
+ 
+       const schema = {minimum: 1}
+       let validate = ajv.compile(schema)
++// @ts-ignore
+       validate(0).should.equal(false)
++// @ts-ignore
+       validate(1).should.equal(true)
++// @ts-ignore
+       validate(2).should.equal(true)
+ 
+       ajv.removeKeyword("minimum")
+       ajv.removeSchema(schema)
+ 
+       validate = ajv.compile(schema)
++// @ts-ignore
+       validate(0).should.equal(true)
++// @ts-ignore
+       validate(1).should.equal(true)
++// @ts-ignore
+       validate(2).should.equal(true)
+ 
+       ajv.addKeyword({
+@@ -1261,13 +1287,17 @@
+       ajv.removeSchema(schema)
+ 
+       validate = ajv.compile(schema)
++// @ts-ignore
+       validate(0).should.equal(false)
++// @ts-ignore
+       validate(1).should.equal(false)
++// @ts-ignore
+       validate(2).should.equal(true)
+     })
+ 
+     it("should return instance of itself", () => {
+       const res = ajv.addKeyword("any").removeKeyword("any")
++// @ts-ignore
+       res.should.equal(ajv)
+     })
+   })
+@@ -1324,7 +1354,9 @@
+ 
+       const obj: any = {foo: "bar,baz,quux"}
+ 
++// @ts-ignore
+       validate(obj).should.equal(true)
++// @ts-ignore
+       obj.should.eql({foo: ["bar", "baz", "quux"]})
+     }
+   })
+@@ -1343,7 +1375,9 @@
+         valid: false,
+       })
+ 
++// @ts-ignore
+       ajv.validate({pass: ""}, 1).should.equal(true)
++// @ts-ignore
+       ajv.validate({fail: ""}, 1).should.equal(false)
+     })
+   })
+@@ -1377,7 +1411,9 @@
+       }
+ 
+       const v = ajv.compile(schema)
++// @ts-ignore
+       v({foo: 1}).should.equal(true)
++// @ts-ignore
+       v({}).should.equal(false)
+     })
+   })
+--- a/spec/options/comment.spec.ts
++++ b/spec/options/comment.spec.ts
+@@ -35,7 +35,9 @@
+ 
+         function test(data, valid, expectedLogCalls) {
+           logCalls = []
++// @ts-ignore
+           validate(data).should.equal(valid)
++// @ts-ignore
+           logCalls.should.eql(expectedLogCalls)
+         }
+       })
+@@ -83,7 +85,9 @@
+ 
+         function test(data, valid, expectedHookCalls) {
+           hookCalls = []
++// @ts-ignore
+           validate(data).should.equal(valid)
++// @ts-ignore
+           hookCalls.should.eql(expectedHookCalls)
+         }
+       })
+--- a/spec/options/meta_validateSchema.spec.ts
++++ b/spec/options/meta_validateSchema.spec.ts
+@@ -8,8 +8,11 @@
+     testOptionMeta(new _Ajv({meta: true}))
+ 
+     function testOptionMeta(ajv) {
++// @ts-ignore
+       ajv.getSchema("http://json-schema.org/draft-07/schema").should.be.a("function")
++// @ts-ignore
+       ajv.validateSchema({$id: "ok", type: "integer"}).should.equal(true)
++// @ts-ignore
+       ajv.validateSchema({$id: "wrong", type: 123}).should.equal(false)
+       should.not.throw(() => {
+         ajv.addSchema({$id: "ok", type: "integer"})
+@@ -63,7 +66,9 @@
+       should.not.throw(() => {
+         ajv.addSchema({type: 123}, "integer")
+       })
++// @ts-ignore
+       loggedError.should.equal(true)
++// @ts-ignore
+       loggedWarning.should.equal(false)
+     })
+ 
+@@ -72,14 +77,18 @@
+       should.not.throw(() => {
+         ajv.addSchema({type: 123}, "integer")
+       })
++// @ts-ignore
+       loggedError.should.equal(false)
++// @ts-ignore
+       loggedWarning.should.equal(true)
+     })
+   })
+ 
+   it("should validate v6 schema", () => {
+     const ajv = new _Ajv()
++// @ts-ignore
+     ajv.validateSchema({contains: {minimum: 2}}).should.equal(true)
++// @ts-ignore
+     ajv.validateSchema({contains: 2}).should.equal(false)
+   })
+ 
+@@ -91,17 +100,22 @@
+       },
+     }
+     let ajv = new _Ajv({meta: meta})
++// @ts-ignore
+     ajv.validateSchema({myKeyword: true}).should.equal(true)
++// @ts-ignore
+     ajv.validateSchema({myKeyword: 2}).should.equal(false)
+     ajv
+       .validateSchema({
+         $schema: "http://json-schema.org/draft-07/schema",
+         myKeyword: 2,
+       })
++// @ts-ignore
+       .should.equal(true)
+ 
+     ajv = new _Ajv()
++// @ts-ignore
+     ajv.validateSchema({myKeyword: true}).should.equal(true)
++// @ts-ignore
+     ajv.validateSchema({myKeyword: 2}).should.equal(true)
+   })
+ })
+--- a/spec/options/options_add_schemas.spec.ts
++++ b/spec/options/options_add_schemas.spec.ts
+@@ -12,9 +12,13 @@
+         },
+       })
+ 
++// @ts-ignore
+       ajv.validate("int", 123).should.equal(true)
++// @ts-ignore
+       ajv.validate("int", "foo").should.equal(false)
++// @ts-ignore
+       ajv.validate("str", "foo").should.equal(true)
++// @ts-ignore
+       ajv.validate("str", 123).should.equal(false)
+     })
+ 
+@@ -34,8 +38,11 @@
+         ],
+       })
+ 
++// @ts-ignore
+       ajv.validate("obj", {int: 123, str: "foo"}).should.equal(true)
++// @ts-ignore
+       ajv.validate("obj", {int: "foo", str: "bar"}).should.equal(false)
++// @ts-ignore
+       ajv.validate("obj", {int: 123, str: 456}).should.equal(false)
+     })
+   })
+@@ -53,13 +60,19 @@
+           it("should add schema", () => {
+             let schema = {$id: "str", type: "string"}
+             const validate = ajv.compile(schema)
++// @ts-ignore
+             validate("abc").should.equal(true)
++// @ts-ignore
+             validate(1).should.equal(false)
++// @ts-ignore
+             ajv.getSchema("str").should.equal(validate)
+ 
+             schema = {$id: "int", type: "integer"}
++// @ts-ignore
+             ajv.validate(schema, 1).should.equal(true)
++// @ts-ignore
+             ajv.validate(schema, "abc").should.equal(false)
++// @ts-ignore
+             ajv.getSchema("int").should.be.a("function")
+           })
+ 
+@@ -71,6 +84,7 @@
+ 
+             const schema = {$id: "int", type: "integer"}
+             const schema2 = {$id: "int", type: "integer", minimum: 0}
++// @ts-ignore
+             ajv.validate(schema, 1).should.equal(true)
+             should.throw(() => {
+               ajv.validate(schema2, 1)
+@@ -91,12 +105,16 @@
+         it("should NOT add schema", () => {
+           let schema = {$id: "str", type: "string"}
+           const validate = ajv.compile(schema)
++// @ts-ignore
+           validate("abc").should.equal(true)
++// @ts-ignore
+           validate(1).should.equal(false)
+           should.equal(ajv.getSchema("str"), undefined)
+ 
+           schema = {$id: "int", type: "integer"}
++// @ts-ignore
+           ajv.validate(schema, 1).should.equal(true)
++// @ts-ignore
+           ajv.validate(schema, "abc").should.equal(false)
+           should.equal(ajv.getSchema("int"), undefined)
+         })
+@@ -109,8 +127,10 @@
+ 
+           const schema = {$id: "int", type: "integer"}
+           const schema2 = {$id: "int", type: "integer", minimum: 0}
++// @ts-ignore
+           ajv.validate(schema, 1).should.equal(true)
+           should.not.throw(() => {
++// @ts-ignore
+             ajv.validate(schema2, 1).should.equal(true)
+           })
+         })
+--- a/spec/options/options_code.spec.ts
++++ b/spec/options/options_code.spec.ts
+@@ -11,6 +11,7 @@
+ 
+         function test(ajv) {
+           const validate = ajv.compile({type: "number"})
++// @ts-ignore
+           validate.source.validateCode.should.be.a("string")
+         }
+       })
+@@ -40,8 +41,11 @@
+       const beautify = require("js-beautify").js_beautify
+       const ajvPC = new _Ajv({code: {process: beautify}})
+       validate = ajvPC.compile({type: "string"})
++// @ts-ignore
+       validate.toString().split("\n").length.should.be.above(unprocessedLines)
++// @ts-ignore
+       validate("foo").should.equal(true)
++// @ts-ignore
+       validate(1).should.equal(false)
+     })
+   })
+@@ -58,7 +62,9 @@
+         const validate = getValidate(true)
+         const self = {}
+         validate.call(self, {})
++// @ts-ignore
+         contexts.should.have.length(4)
++// @ts-ignore
+         contexts.forEach((ctx) => ctx.should.equal(self))
+       })
+     })
+@@ -68,7 +74,9 @@
+         const validate = getValidate(false)
+         const self = {}
+         validate.call(self, {})
++// @ts-ignore
+         contexts.should.have.length(4)
++// @ts-ignore
+         contexts.forEach((ctx) => ctx.should.equal(ajv))
+       })
+     })
+@@ -114,8 +122,11 @@
+       test(ajv2, {enum: ["foo", "bar", "baz"]})
+ 
+       function test(ajv, schema) {
++// @ts-ignore
+         ajv.validate(schema, "foo").should.equal(true)
++// @ts-ignore
+         ajv.validate(schema, "boo").should.equal(false)
++// @ts-ignore
+         ajv.validate(schema, 1).should.equal(false)
+       }
+     })
+--- a/spec/options/options_refs.spec.ts
++++ b/spec/options/options_refs.spec.ts
+@@ -37,7 +37,9 @@
+       }
+ 
+       let validate = ajv.compile(schema)
++// @ts-ignore
+       validate(10).should.equal(true)
++// @ts-ignore
+       validate(1).should.equal(!shouldExtendRef)
+ 
+       const schema1 = {
+@@ -59,8 +61,11 @@
+       }
+ 
+       validate = ajv.compile(schema1)
++// @ts-ignore
+       validate({foo: 10, bar: 10}).should.equal(true)
++// @ts-ignore
+       validate({foo: 1, bar: 10}).should.equal(!shouldExtendRef)
++// @ts-ignore
+       validate({foo: 10, bar: 1}).should.equal(false)
+     }
+ 
+@@ -85,6 +90,7 @@
+         }
+ 
+         ajv.compile(schema)
++// @ts-ignore
+         if (msgPattern) consoleMsg.should.match(msgPattern)
+         else should.not.exist(consoleMsg)
+       } finally {
+--- a/spec/options/options_reporting.spec.ts
++++ b/spec/options/options_reporting.spec.ts
+@@ -18,12 +18,16 @@
+         const validate = ajv.compile(schema)
+ 
+         const data = {foo: 3}
++// @ts-ignore
+         validate(data).should.equal(false)
++// @ts-ignore
+         validate.errors.should.have.length(1)
+         const err = validate.errors[0]
+ 
+         should.equal(err.schema, 5)
++// @ts-ignore
+         err.parentSchema.should.eql({type: "number", minimum: 5})
++// @ts-ignore
+         err.parentSchema.should.equal(schema.properties.foo) // by reference
+         should.equal(err.data, 3)
+       }
+@@ -54,9 +58,13 @@
+           allOf: [{format: "format1"}, {format: "format2"}],
+         }
+ 
++// @ts-ignore
+         ajv.validate(schema1, "abc").should.equal(false)
++// @ts-ignore
+         ajv.errors.should.have.length(allErrors ? 2 : 1)
++// @ts-ignore
+         format1called.should.equal(true)
++// @ts-ignore
+         format2called.should.equal(allErrors)
+ 
+         const schema2 = {
+@@ -64,9 +72,13 @@
+         }
+ 
+         format1called = format2called = false
++// @ts-ignore
+         ajv.validate(schema2, "abc").should.equal(true)
++// @ts-ignore
+         should.equal(ajv.errors, null)
++// @ts-ignore
+         format1called.should.equal(true)
++// @ts-ignore
+         format2called.should.equal(false)
+       }
+     })
+@@ -146,6 +158,7 @@
+         meta: false,
+         logger: {},
+       }
++// @ts-ignore
+       ;(() => new _Ajv(opts)).should.throw(
+         Error,
+         /logger must implement log, warn and error methods/
+--- a/spec/options/options_validation.spec.ts
++++ b/spec/options/options_validation.spec.ts
+@@ -14,7 +14,9 @@
+       const schema = {type: "string", format: "date"}
+       const invalideDateTime = "06/19/1963" // expects hyphens
+ 
++// @ts-ignore
+       ajv.validate(schema, invalideDateTime).should.equal(false)
++// @ts-ignore
+       ajvFF.validate(schema, invalideDateTime).should.equal(true)
+     })
+   })
+@@ -33,9 +35,13 @@
+         format: "identifier",
+       })
+ 
++// @ts-ignore
+       validate("Abc1").should.equal(true)
++// @ts-ignore
+       validate("foo bar").should.equal(false)
++// @ts-ignore
+       validate("123").should.equal(false)
++// @ts-ignore
+       validate(123).should.equal(true)
+     })
+   })
+@@ -83,9 +89,13 @@
+         identifier: true,
+       })
+ 
++// @ts-ignore
+       validate("Abc1").should.equal(true)
++// @ts-ignore
+       validate("foo bar").should.equal(false)
++// @ts-ignore
+       validate("123").should.equal(false)
++// @ts-ignore
+       validate(123).should.equal(true)
+     }
+   })
+@@ -100,13 +110,17 @@
+         let validateWithUnicode = ajvUnicode.compile({type: "string", minLength: 2})
+         let validate = ajv.compile({type: "string", minLength: 2})
+ 
++// @ts-ignore
+         validateWithUnicode("😀").should.equal(false)
++// @ts-ignore
+         validate("😀").should.equal(true)
+ 
+         validateWithUnicode = ajvUnicode.compile({type: "string", maxLength: 1})
+         validate = ajv.compile({type: "string", maxLength: 1})
+ 
++// @ts-ignore
+         validateWithUnicode("😀").should.equal(true)
++// @ts-ignore
+         validate("😀").should.equal(false)
+       }
+     })
+@@ -121,14 +135,19 @@
+         let schema = {type: "number", multipleOf: 0.01}
+         let validate = ajv.compile(schema)
+ 
++// @ts-ignore
+         validate(4.18).should.equal(true)
++// @ts-ignore
+         validate(4.181).should.equal(false)
+ 
+         schema = {type: "number", multipleOf: 0.0000001}
+         validate = ajv.compile(schema)
+ 
++// @ts-ignore
+         validate(53.198098).should.equal(true)
++// @ts-ignore
+         validate(53.1980981).should.equal(true)
++// @ts-ignore
+         validate(53.19809811).should.equal(false)
+       }
+     })
+--- a/spec/options/ownProperties.spec.ts
++++ b/spec/options/ownProperties.spec.ts
+@@ -171,15 +171,24 @@
+     for (const key in obj) data[key] = obj[key]
+ 
+     if (reverse) {
++// @ts-ignore
+       validate(data).should.equal(true)
++// @ts-ignore
+       validateOP(data).should.equal(false)
++// @ts-ignore
+       validateOP.errors?.should.have.length(errors)
++// @ts-ignore
+       validateOP1(data).should.equal(false)
++// @ts-ignore
+       validateOP1.errors?.should.have.length(1)
+     } else {
++// @ts-ignore
+       validate(data).should.equal(false)
++// @ts-ignore
+       validate.errors?.should.have.length(errors)
++// @ts-ignore
+       validateOP(data).should.equal(true)
++// @ts-ignore
+       validateOP1(data).should.equal(true)
+     }
+   }
+--- a/spec/options/removeAdditional.spec.ts
++++ b/spec/options/removeAdditional.spec.ts
+@@ -18,9 +18,13 @@
+       baz: "baz-to-be-removed",
+     }
+ 
++// @ts-ignore
+     ajv.validate("//test/fooBar", object).should.equal(true)
++// @ts-ignore
+     object.should.have.property("foo")
++// @ts-ignore
+     object.should.have.property("bar")
++// @ts-ignore
+     object.should.not.have.property("baz")
+   })
+ 
+@@ -40,9 +44,13 @@
+       baz: "baz-to-be-removed",
+     }
+ 
++// @ts-ignore
+     ajv.validate("//test/fooBar", object).should.equal(true)
++// @ts-ignore
+     object.should.have.property("foo")
++// @ts-ignore
+     object.should.have.property("bar")
++// @ts-ignore
+     object.should.not.have.property("baz")
+   })
+ 
+@@ -78,7 +86,9 @@
+       },
+     }
+ 
++// @ts-ignore
+     ajv.validate(schema, data).should.equal(false)
++// @ts-ignore
+     data.should.eql({
+       obj: {
+         a: "valid",
+@@ -104,10 +114,15 @@
+       fizz: 1000,
+     }
+ 
++// @ts-ignore
+     ajv.validate("//test/fooBar", object).should.equal(true)
++// @ts-ignore
+     object.should.have.property("foo")
++// @ts-ignore
+     object.should.have.property("bar")
++// @ts-ignore
+     object.should.have.property("baz")
++// @ts-ignore
+     object.should.not.have.property("fizz")
+ 
+     ajv.addSchema({
+@@ -125,10 +140,15 @@
+       fizz: 1000,
+     }
+ 
++// @ts-ignore
+     ajv.validate("//test/fooBar2", object1).should.equal(true)
++// @ts-ignore
+     object1.should.have.property("foo")
++// @ts-ignore
+     object1.should.have.property("bar")
++// @ts-ignore
+     object1.should.have.property("baz")
++// @ts-ignore
+     object1.should.not.have.property("fizz")
+   })
+ })
+--- a/spec/options/schemaId.spec.ts
++++ b/spec/options/schemaId.spec.ts
+@@ -11,7 +11,9 @@
+     function test(ajv) {
+       ajv.addSchema({$id: "mySchema1", type: "string"})
+       const validate = ajv.getSchema("mySchema1")
++// @ts-ignore
+       validate("foo").should.equal(true)
++// @ts-ignore
+       validate(1).should.equal(false)
+ 
+       should.throw(
+@@ -28,7 +30,9 @@
+       ajv.addSchema({$id: "mySchema1", type: "string"})
+       const validate = ajv.getSchema("mySchema1")
+       assert(typeof validate == "function")
++// @ts-ignore
+       validate("foo").should.equal(true)
++// @ts-ignore
+       validate(1).should.equal(false)
+ 
+       should.throw(
+--- a/spec/options/unicodeRegExp.spec.ts
++++ b/spec/options/unicodeRegExp.spec.ts
+@@ -38,6 +38,7 @@
+ 
+     it("should validate unicode character", () => {
+       const validate = ajv.compile(unicodeSchema)
++// @ts-ignore
+       validate(unicodeChar).should.equal(true)
+     })
+   })
+@@ -47,6 +48,7 @@
+     it("should pass schema compilation if used unnecessary escape sequence for pattern", () => {
+       should.not.throw(() => {
+         const validate = ajv.compile(schemaWithEscape)
++// @ts-ignore
+         validate(":").should.equal(true)
+       })
+     })
+@@ -54,13 +56,16 @@
+     it("should pass schema compilation if used unnecessary escape sequence for patternProperties", () => {
+       should.not.throw(() => {
+         const validate = ajv.compile(patternPropertiesSchema)
++// @ts-ignore
+         validate({":test": 1}).should.equal(true)
++// @ts-ignore
+         validate({test: 1}).should.equal(false)
+       })
+     })
+ 
+     it("should not validate unicode character", () => {
+       const validate = ajv.compile(unicodeSchema)
++// @ts-ignore
+       validate(unicodeChar).should.equal(false)
+     })
+   })
+--- a/spec/options/useDefaults.spec.ts
++++ b/spec/options/useDefaults.spec.ts
+@@ -34,7 +34,9 @@
+       const validate = ajv.compile(schema)
+ 
+       let data = {}
++// @ts-ignore
+       validate(data).should.equal(true)
++// @ts-ignore
+       data.should.eql({
+         foo: "abc",
+         bar: 1,
+@@ -45,7 +47,9 @@
+       })
+ 
+       data = {foo: "foo", bar: 2, obj: {test: true}}
++// @ts-ignore
+       validate(data).should.equal(true)
++// @ts-ignore
+       data.should.eql({
+         foo: "foo",
+         bar: 2,
+@@ -76,16 +80,23 @@
+       const validate = ajv.compile(schema)
+ 
+       let data: any = []
++// @ts-ignore
+       validate(data).should.equal(true)
++// @ts-ignore
+       data.should.eql(["abc", 1, false])
+ 
+       data = ["foo"]
++// @ts-ignore
+       validate(data).should.equal(true)
++// @ts-ignore
+       data.should.eql(["foo", 1, false])
+ 
+       data = ["foo", 2, "false"]
++// @ts-ignore
+       validate(data).should.equal(false)
++// @ts-ignore
+       validate.errors.should.have.length(1)
++// @ts-ignore
+       data.should.eql(["foo", 2, "false"])
+     }
+   })
+@@ -113,11 +124,15 @@
+       const validate = ajv.compile(schema)
+ 
+       let data = {}
++// @ts-ignore
+       validate(data).should.equal(true)
++// @ts-ignore
+       data.should.eql({foo: 1})
+ 
+       data = {foo: 1}
++// @ts-ignore
+       validate(data).should.equal(true)
++// @ts-ignore
+       data.should.eql({foo: 1, bar: 2})
+     }
+   })
+@@ -142,15 +157,20 @@
+       const validate = ajv.compile(schema)
+ 
+       const data: any = {}
++// @ts-ignore
+       validate(data).should.equal(true)
++// @ts-ignore
+       data.items.should.eql(["a-default"])
+ 
+       data.items.push("another-value")
++// @ts-ignore
+       data.items.should.eql(["a-default", "another-value"])
+ 
+       const data2: any = {}
++// @ts-ignore
+       validate(data2).should.equal(true)
+ 
++// @ts-ignore
+       data2.items.should.eql(["a-default"])
+     }
+   })
+@@ -195,7 +215,9 @@
+ 
+       function test(ajv) {
+         const validate = ajv.compile(schema)
++// @ts-ignore
+         validate(data).should.equal(true)
++// @ts-ignore
+         data.should.eql({
+           obj: {
+             str: "",
+@@ -211,7 +233,9 @@
+     it('should assign defaults when useDefaults = "empty"', () => {
+       const ajv = new _Ajv({useDefaults: "empty"})
+       const validate = ajv.compile(schema)
++// @ts-ignore
+       validate(data).should.equal(true)
++// @ts-ignore
+       data.should.eql({
+         obj: {
+           str: "foo",
+--- a/spec/resolve.spec.ts
++++ b/spec/resolve.spec.ts
+@@ -76,6 +76,7 @@
+           instances.forEach((ajv) => {
+             const validate = ajv.compile(schema)
+             const data = {foo: 1, bar: "abc", baz: true, bax: null}
++// @ts-ignore
+             validate(data).should.equal(true)
+           })
+         })
+@@ -99,6 +100,7 @@
+             ajv.addSchema(schema, "yaml.json")
+             const data = {see_also: 1}
+             const validate = ajv.validate("yaml.json#/definitions/Engine", data)
++// @ts-ignore
+             validate.should.equal(true)
+           })
+         })
+@@ -157,6 +159,7 @@
+           }
+           instances.forEach((ajv) => {
+             const validate = ajv.compile(schema)
++// @ts-ignore
+             validate(data).should.equal(true)
+           })
+         })
+@@ -174,7 +177,9 @@
+ 
+             ajv.addSchema(schema)
+             const validate = ajv.compile({$ref: "//e.com/types#/definitions/int"})
++// @ts-ignore
+             validate(1).should.equal(true)
++// @ts-ignore
+             validate("foo").should.equal(false)
+           })
+         })
+@@ -238,7 +243,9 @@
+               })
+             } catch (err) {
+               const e = err as MissingRefError
++// @ts-ignore
+               e.missingRef.should.equal(opts.expectedMissingRef)
++// @ts-ignore
+               e.missingSchema.should.equal(opts.expectedMissingSchema)
+             }
+           })
+--- a/spec/schema-tests.spec.ts
++++ b/spec/schema-tests.spec.ts
+@@ -43,5 +43,6 @@
+   ajv.opts.code.source = true
+   for (const id in remoteRefs) ajv.addSchema(remoteRefs[id], id)
+   ajv.addSchema(remoteRefsWithIds)
++// @ts-ignore
+   ajvFormats(ajv)
+ }
+--- a/spec/standalone.spec.ts
++++ b/spec/standalone.spec.ts
+@@ -341,6 +341,7 @@
+ 
+     it("should support formats with standalone code", () => {
+       const ajv = new _Ajv({code: {source: true}})
++// @ts-ignore
+       ajvFormats(ajv)
+       ajv.addSchema(schema)
+       const moduleCode = standaloneCode(ajv, {validateUser: "#/definitions/User"})
+--- a/spec/types/async-validate.spec.ts
++++ b/spec/types/async-validate.spec.ts
+@@ -19,8 +19,10 @@
+       const data: unknown = {foo: 1}
+       let result: boolean
+       if ((result = validate(data))) {
++// @ts-ignore
+         data.foo.should.equal(1)
+       }
++// @ts-ignore
+       result.should.equal(true)
+     })
+ 
+@@ -33,8 +35,10 @@
+       const data: unknown = {foo: 1}
+       let result: boolean
+       if ((result = validate(data))) {
++// @ts-ignore
+         data.foo.should.equal(1)
+       }
++// @ts-ignore
+       result.should.equal(true)
+     })
+ 
+@@ -47,8 +51,10 @@
+       const data: unknown = {foo: 1}
+       let result: boolean
+       if ((result = validate(data))) {
++// @ts-ignore
+         data.foo.should.equal(1)
+       }
++// @ts-ignore
+       result.should.equal(true)
+     })
+   })
+@@ -83,6 +89,7 @@
+         properties: {foo: {type: "number"}},
+       })
+       const result: Promise<Foo> = validate({foo: 1})
++// @ts-ignore
+       await result.then((data) => data.should.exist)
+     })
+ 
+@@ -94,6 +101,7 @@
+       }
+       const validate = ajv.compile<Foo>(schema)
+       const result: Promise<Foo> = validate({foo: 1})
++// @ts-ignore
+       await result.then((data) => data.foo.should.equal(1))
+     })
+   })
+@@ -110,8 +118,10 @@
+       let result: boolean | Promise<Foo>
+       if ((result = validate(data))) {
+         if (typeof result == "boolean") {
++// @ts-ignore
+           data.foo.should.equal(1)
+         } else {
++// @ts-ignore
+           await result.then((_data) => _data.foo.should.equal(1))
+         }
+       } else {
+@@ -126,6 +136,7 @@
+       if (typeof result === "boolean") {
+         should.exist(result)
+       } else {
++// @ts-ignore
+         await result.then((data) => data.should.exist)
+       }
+     })
+@@ -142,8 +153,10 @@
+       const data = {foo: 1}
+       let result: boolean
+       if ((result = validate(data))) {
++// @ts-ignore
+         data.foo.should.equal(1)
+       }
++// @ts-ignore
+       result.should.equal(true)
+     })
+   })
+@@ -153,6 +166,7 @@
+     const validate = ajv.compile(schema)
+     it("should have result type boolean | promise", () => {
+       const result: boolean = validate({})
++// @ts-ignore
+       result.should.equal(true)
+     })
+   })
+--- a/spec/types/error-parameters.spec.ts
++++ b/spec/types/error-parameters.spec.ts
+@@ -9,17 +9,22 @@
+   it("should be determined by the keyword", () => {
+     const validate = ajv.compile({type: "number", minimum: 0, multipleOf: 2})
+     const valid = validate(-1)
++// @ts-ignore
+     valid.should.equal(false)
+     const errs = validate.errors
+     if (errs) {
++// @ts-ignore
+       errs.length.should.equal(2)
+       for (const err of errs as DefinedError[]) {
+         switch (err.keyword) {
+           case "minimum":
++// @ts-ignore
+             err.params.limit.should.equal(0)
++// @ts-ignore
+             err.params.comparison.should.equal(">=")
+             break
+           case "multipleOf":
++// @ts-ignore
+             err.params.multipleOf.should.equal(2)
+             break
+           default:
+--- a/spec/types/json-schema.spec.ts
++++ b/spec/types/json-schema.spec.ts
+@@ -171,11 +171,13 @@
+     it("should prove the type of validated data", () => {
+       const validate = ajv.compile(mySchema)
+       if (validate(validData)) {
++// @ts-ignore
+         validData.foo.should.equal("foo")
+       }
+       should.not.exist(validate.errors)
+ 
+       if (ajv.validate(mySchema, validData)) {
++// @ts-ignore
+         validData.foo.should.equal("foo")
+       }
+       should.not.exist(ajv.errors)
+@@ -195,6 +197,7 @@
+         } else if (typeof validUnionData === "number") {
+           should.fail("not a number")
+         } else {
++// @ts-ignore
+           validUnionData.a.should.equal(true)
+         }
+       } else {
+@@ -208,6 +211,7 @@
+         } else if (typeof validUnionData === "number") {
+           should.fail("not a number")
+         } else {
++// @ts-ignore
+           validUnionData.a.should.equal(true)
+         }
+       } else {
+@@ -224,6 +228,7 @@
+         } else if (typeof validUnionData === "number") {
+           should.fail("not a number")
+         } else {
++// @ts-ignore
+           validUnionData.a.should.equal(true)
+         }
+       } else {
+@@ -237,6 +242,7 @@
+         } else if (typeof validUnionData === "number") {
+           should.fail("not a number")
+         } else {
++// @ts-ignore
+           validUnionData.a.should.equal(true)
+         }
+       } else {
+@@ -267,11 +273,13 @@
+       const schema = mySchema as SchemaObject
+       const validate = ajv.compile<MyData>(schema)
+       if (validate(validData)) {
++// @ts-ignore
+         validData.foo.should.equal("foo")
+       }
+       should.not.exist(validate.errors)
+ 
+       if (ajv.validate<MyData>(schema, validData)) {
++// @ts-ignore
+         validData.foo.should.equal("foo")
+       }
+       should.not.exist(ajv.errors)
+@@ -346,6 +354,7 @@
+       } as const
+       const validate = ajv.compile(nullSchema)
+       // eslint-disable-next-line @typescript-eslint/no-unused-expressions
++// @ts-ignore
+       validate(null).should.be.true
+     })
+   })
+--- a/spec/types/jtd-schema.spec.ts
++++ b/spec/types/jtd-schema.spec.ts
+@@ -52,11 +52,13 @@
+     const validate = ajv.compile(mySchema)
+     const validData: unknown = {type: "a", a: 1}
+     if (validate(validData) && validData.type === "a") {
++// @ts-ignore
+       validData.a.should.equal(1)
+     }
+     should.not.exist(validate.errors)
+ 
+     if (ajv.validate(mySchema, validData) && validData.type === "a") {
++// @ts-ignore
+       validData.a.should.equal(1)
+     }
+     should.not.exist(ajv.errors)
+@@ -68,6 +70,7 @@
+     const validJson = '{"type": "a", "a": 1}'
+     const data = parse(validJson)
+     if (data !== undefined && data.type === "a") {
++// @ts-ignore
+       data.a.should.equal(1)
+     }
+     should.not.exist(parse.message)
+@@ -77,6 +80,7 @@
+     const ajv = new _Ajv()
+     const serialize = ajv.compileSerializer(mySchema)
+     const validData = {type: "a" as const, a: 1}
++// @ts-ignore
+     serialize(validData).should.equal('{"type":"a","a":1}')
+     const invalidData = {type: "a" as const, b: "test"}
+     // @ts-expect-error
+@@ -89,11 +93,13 @@
+     const validData: unknown = {type: "c"}
+ 
+     if (validate(validData)) {
++// @ts-ignore
+       validData.type.should.equal("c")
+     }
+     should.not.exist(validate.errors)
+ 
+     if (ajv.validate(missingSchema, validData)) {
++// @ts-ignore
+       validData.type.should.equal("c")
+     }
+     should.not.exist(validate.errors)
+@@ -416,11 +422,13 @@
+     const validate = ajv.compile(mySchema1)
+     const validData: unknown = {type: "a", a: 1}
+     if (validate(validData) && validData.type === "a") {
++// @ts-ignore
+       validData.a.should.equal(1)
+     }
+     should.not.exist(validate.errors)
+ 
+     if (ajv.validate(mySchema1, validData) && validData.type === "a") {
++// @ts-ignore
+       validData.a.should.equal(1)
+     }
+     should.not.exist(ajv.errors)

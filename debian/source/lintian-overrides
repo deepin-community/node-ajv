@@ -1,7 +1,6 @@
 # just data
-source-is-missing lib/compile/formats.js
-very-long-line-length-in-source-file COERCION.md line 14 is 743 characters long (>512)
-very-long-line-length-in-source-file CUSTOM.md line 205 is 513 characters long (>512)
-very-long-line-length-in-source-file FAQ.md line 103 is 620 characters long (>512)
-very-long-line-length-in-source-file README.md line 1322 is 608 characters long (>512)
-very-long-line-length-in-source-file lib/compile/formats.js line 17 is 1722 characters long (>512)
+very-long-line-length-in-source-file 668 > 512 [README.md:24]
+very-long-line-length-in-source-file 1165 > 512 [ajv-formats/src/formats.ts:53]
+
+# Same author
+add-component-copyright ajv-formats [debian/copyright]

@@ -1,1 +1,3 @@
-skip-beautify.patch
+import-spec.patch
+workaround-tsc-update.patch
+fix-test-specs.patch
